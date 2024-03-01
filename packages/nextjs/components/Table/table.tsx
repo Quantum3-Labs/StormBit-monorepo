@@ -2,9 +2,10 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { formatUnits } from "viem";
-import { useContractEvent, useContractReads } from "wagmi";
-import { useScaffoldContract, useScaffoldContractRead } from "~~/hooks/scaffold-eth";
+import { formatEther, formatUnits, parseAbiItem } from "viem";
+import { useContractReads } from "wagmi";
+import { GetAccountResult } from "wagmi/actions";
+import { useScaffoldContract, useScaffoldContractRead, useScaffoldEventHistory } from "~~/hooks/scaffold-eth";
 import { Pools } from "~~/types/Pools";
 
 interface PoolResult {
@@ -15,57 +16,91 @@ interface PoolResult {
 
 function Table() {
   const [poolList, setPoolList] = useState([] as Pools[]);
-  // get the events from the contract
-  const { data: poolAddresses, isLoading: poolAddressesLoading } = useScaffoldContractRead({
-    contractName: "StormBitCore",
-    functionName: "getPools",
-    watch: true,
-  });
 
   const { data: LendingContract } = useScaffoldContract({
     contractName: "StormBitLending",
   });
 
-  const { data: pools, isLoading: poolsLoading } = useContractReads({
-    contracts:
-      LendingContract && poolAddresses
-        ? poolAddresses.map(pool => {
-            return {
-              address: pool,
-              abi: LendingContract.abi,
-              functionName: "getPoolData",
-            };
-          })
-        : [],
+  const { data: tDAIContract } = useScaffoldContract({
+    contractName: "tDAI",
+  });
+  const { data: tETHContract } = useScaffoldContract({
+    contractName: "tETH",
+  });
+  const { data: tBTCContract } = useScaffoldContract({
+    contractName: "tBTC",
   });
 
+  const { data: ScaffoldEventHistoryData, isLoading: ScaffoldEventHistoryLoading } = useScaffoldEventHistory({
+    contractName: "StormBitCore",
+    eventName: "PoolCreated",
+    fromBlock: BigInt(0),
+  });
 
+  const { data: pools, isLoading: poolsLoading } = useContractReads({
+    contracts: ScaffoldEventHistoryData?.map(item => ({
+      address: item.args.pool,
+      abi: LendingContract?.abi,
+      functionName: "poolName",
+    })),
+  });
 
-  useEffect(() => {
-    if (pools && pools.length > 0 && poolAddresses) {
-      setPoolList(
-        pools.map((pool, index) => {
-          const poolAddr = poolAddresses?.[index];
+  console.log(pools);
 
-          const poolResult: PoolResult = pool.result as PoolResult;
+  const poolAddresses = ScaffoldEventHistoryData?.map(item => item.log.address);
 
-          return {
-            address: poolAddr || "",
-            name: poolResult ? poolResult.name : "",
-            borrowedAPY: "0%",
-            suppliedAPY: "0%",
-            totalBorrowed: poolResult ? formatUnits(poolResult.totalBorrowed, 18) : "0",
-            totalSupplied: poolResult ? formatUnits(poolResult.totalSupplied, 18) : "0",
-            marketSize: poolResult ? formatUnits(poolResult.totalBorrowed + poolResult.totalSupplied, 18) : "0",
-          };
-        }),
-      );
-    }
-  }, [pools]);
+  console.log(poolAddresses);
+
+  const tokenData = poolAddresses
+    ? [
+        ...poolAddresses.flatMap(item => [
+          {
+            address: tDAIContract?.address,
+            abi: tDAIContract?.abi,
+            method: "balanceOf",
+            params: [item],
+          },
+        ]),
+      ]
+    : [];
+
+  console.log({ tokenData });
+
+  const { data: tokensPoolData } = useContractReads({
+    contracts: tokenData,
+  });
+
+  console.log(tokensPoolData);
+
+  // console.log(LendingContract)
+
+  // useEffect(() => {
+  // if (pools && pools.length > 0 && poolsEvent) {
+  // setPoolList(
+  //   pools.map((pool, index) => {
+  //     const poolAddr = poolsEvent?.[index];
+  //
+  //     const poolResult: PoolResult = pool.result as PoolResult;
+  //
+  //     return {
+  //       address: poolAddr || "",
+  //       name: poolResult ? poolResult.name : "",
+  //       borrowedAPY: "0%",
+  //       suppliedAPY: "0%",
+  //       totalBorrowed: poolResult ? formatUnits(poolResult.totalBorrowed, 18) : "0",
+  //       totalSupplied: poolResult ? formatUnits(poolResult.totalSupplied, 18) : "0",
+  //       marketSize: poolResult ? formatUnits(poolResult.totalBorrowed + poolResult.totalSupplied, 18) : "0",
+  //     };
+  //   }),
+  // );
+  //   }
+  // }, [pools]);
+  //
+  // console.log(poolList);
 
   return (
     <div className="w-[1450px] flex flex-col">
-      {poolAddressesLoading || poolsLoading ? (
+      {poolsLoading || ScaffoldEventHistoryLoading ? (
         <>
           <div className="flex flex-col items-center justify-center gap-16 my-7">
             <Image src="/loading.png" alt="loading" width={150} height={150}></Image>

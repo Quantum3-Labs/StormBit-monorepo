@@ -82,7 +82,6 @@ const CreationModal: React.FC<ModalProps> = ({ setIsModalOpen }) => {
     blockConfirmations: 0,
   });
 
-
   const { writeAsync: approveTokens } = useScaffoldContractWrite({
     contractName: "tDAI",
     functionName: "approve",
