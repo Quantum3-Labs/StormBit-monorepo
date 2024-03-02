@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Button from "../Button/Button";
 import DropdownButton from "../DropdownButton/DropdownButton";
@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { parseEther } from "viem";
 import { useAccount } from "wagmi";
 import { useScaffoldContract, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
+import { ContractName } from "~~/utils/scaffold-eth/contract";
 
 interface PoolConfig {
   name: string;
@@ -26,6 +27,7 @@ interface ModalProps {
 const CreationModal: React.FC<ModalProps> = ({ setIsModalOpen }) => {
   const { address } = useAccount();
   const [showInfo, setShowInfo] = useState(false);
+  const [selectedToken, setSelectedToken] = useState("ETH");
   const [poolConfig, setPoolConfig] = useState<PoolConfig>({
     name: "",
     owner: address ? address : "",
@@ -38,21 +40,19 @@ const CreationModal: React.FC<ModalProps> = ({ setIsModalOpen }) => {
     agreements: [false, false, false],
   });
 
-  const { data: tokenContractDAI } = useScaffoldContract({
-    contractName: "tDAI",
-  });
+  const contractToken: Record<string, ContractName> = {
+    ETH: "tETH",
+    BTC: "tBTC",
+    DAI: "tDAI",
+  };
 
-  const { data: tokenContractETH } = useScaffoldContract({
-    contractName: "tETH",
-  });
-  const { data: tokenContractBTC } = useScaffoldContract({
-    contractName: "tBTC",
+  const { data: token } = useScaffoldContract({
+    contractName: contractToken[selectedToken],
   });
 
   const { data: simpleAgreementContract } = useScaffoldContract({
     contractName: "SimpleAgreement",
   });
-
 
   const { data: stormBitCoreContract } = useScaffoldContract({
     contractName: "StormBitCore",
@@ -69,8 +69,8 @@ const CreationModal: React.FC<ModalProps> = ({ setIsModalOpen }) => {
         maxPoolUsage: BigInt(poolConfig.maxPoolUsage),
         votingPowerCoolDown: BigInt(poolConfig.votingPowerCooldown),
         initAmount: parseEther(poolConfig.amount.toString()),
-        initToken: tokenContractDAI ? tokenContractDAI.address : "",
-        supportedAssets: [tokenContractDAI ? tokenContractDAI.address : ""],
+        initToken: token ? token.address : "",
+        supportedAssets: [token ? token.address : ""],
         supportedAgreements: [simpleAgreementContract ? simpleAgreementContract.address : ""],
       },
     ],
@@ -83,7 +83,7 @@ const CreationModal: React.FC<ModalProps> = ({ setIsModalOpen }) => {
   });
 
   const { writeAsync: approveTokens } = useScaffoldContractWrite({
-    contractName: "tDAI",
+    contractName: contractToken[selectedToken],
     functionName: "approve",
     args: [stormBitCoreContract ? stormBitCoreContract.address : "", parseEther("1000")],
     value: BigInt(0),
@@ -193,16 +193,18 @@ const CreationModal: React.FC<ModalProps> = ({ setIsModalOpen }) => {
             </div>
             <div className="flex-1">
               <label htmlFor="campo1">Amount</label>
-              <div className="flex items-center border">
+              <div className="flex items-center border rounded-md">
                 <input
                   type="text"
                   id="campo1"
                   name="campo1"
-                  className="w-full p-2 border focus:outline-none"
+                  className="w-full p-2 border-none focus:outline-none"
                   value={String(poolConfig.amount)}
                   onChange={e => setPoolConfig({ ...poolConfig, amount: BigInt(e.target.value ?? 0) })}
                 />
-                <DropdownButton></DropdownButton>
+                <div className="px-[10px]">
+                  <DropdownButton selectedToken={selectedToken} setSelectedToken={setSelectedToken} />
+                </div>
               </div>
             </div>
             <span>Agreement supported</span>
@@ -236,7 +238,7 @@ const CreationModal: React.FC<ModalProps> = ({ setIsModalOpen }) => {
                     onMouseEnter={() => setShowInfo(true)}
                     onMouseLeave={() => setShowInfo(false)}
                   >
-                    <Image src="/information.png" alt="information" width={18} height={18}></Image>
+                    <Image src="/information.png" alt="information" width={18} height={18} />
                     {showInfo && (
                       <div className="text-xs info-tooltip text-[#484848]">
                         <span className="text-xs font-bold">Strategy Name</span>

@@ -37,15 +37,13 @@ function Table() {
     fromBlock: BigInt(0),
   });
 
-  const { data: pools, isLoading: poolsLoading } = useContractReads({
+  const { data: poolName, isLoading: poolsLoading } = useContractReads({
     contracts: ScaffoldEventHistoryData?.map(item => ({
       address: item.args.pool,
       abi: LendingContract?.abi,
       functionName: "poolName",
     })),
   });
-
-  console.log(pools);
 
   const poolAddresses = ScaffoldEventHistoryData?.map(item => item.log.address);
 
@@ -57,6 +55,22 @@ function Table() {
           {
             address: tDAIContract?.address,
             abi: tDAIContract?.abi,
+            method: "balanceOf",
+            params: [item],
+          },
+        ]),
+        ...poolAddresses.flatMap(item => [
+          {
+            address: tETHContract?.address,
+            abi: tETHContract?.abi,
+            method: "balanceOf",
+            params: [item],
+          },
+        ]),
+        ...poolAddresses.flatMap(item => [
+          {
+            address: tBTCContract?.address,
+            abi: tBTCContract?.abi,
             method: "balanceOf",
             params: [item],
           },
