@@ -7,6 +7,7 @@ import { useContractReads } from "wagmi";
 import { GetAccountResult } from "wagmi/actions";
 import { useScaffoldContract, useScaffoldContractRead, useScaffoldEventHistory } from "~~/hooks/scaffold-eth";
 import { Pools } from "~~/types/Pools";
+import { contracts } from "~~/utils/scaffold-eth/contract";
 
 interface PoolResult {
   name: string;
@@ -47,70 +48,71 @@ function Table() {
 
   const poolAddresses = ScaffoldEventHistoryData?.map(item => item.log.address);
 
-  console.log(poolAddresses);
-
   const tokenData = poolAddresses
-    ? [
-        ...poolAddresses.flatMap(item => [
-          {
-            address: tDAIContract?.address,
-            abi: tDAIContract?.abi,
-            method: "balanceOf",
-            params: [item],
-          },
-        ]),
-        ...poolAddresses.flatMap(item => [
-          {
-            address: tETHContract?.address,
-            abi: tETHContract?.abi,
-            method: "balanceOf",
-            params: [item],
-          },
-        ]),
-        ...poolAddresses.flatMap(item => [
-          {
-            address: tBTCContract?.address,
-            abi: tBTCContract?.abi,
-            method: "balanceOf",
-            params: [item],
-          },
-        ]),
-      ]
+    ? poolAddresses.flatMap(address => [
+        {
+          address: tDAIContract?.address,
+          abi: tDAIContract?.abi,
+          method: "balanceOf",
+          params: [address],
+        },
+        {
+          address: tETHContract?.address,
+          abi: tETHContract?.abi,
+          method: "balanceOf",
+          params: [address],
+        },
+        {
+          address: tBTCContract?.address,
+          abi: tBTCContract?.abi,
+          method: "balanceOf",
+          params: [address],
+        },
+      ])
     : [];
 
-  console.log({ tokenData });
+  // console.log(tokenData[1].params);
 
   const { data: tokensPoolData } = useContractReads({
-    contracts: tokenData,
+    contracts:
+      tokenData && ScaffoldEventHistoryData
+        ? tokenData.map(token => {
+            console.log(token.address);
+            console.log(token.abi);
+            console.log(token.method);
+            console.log(token.params);
+            return {
+              address: token.address,
+              abi: token.abi,
+              functionName: token.method,
+              params: token.params,
+            };
+          })
+        : [],
   });
 
   console.log(tokensPoolData);
-
-  // console.log(LendingContract)
-
   // useEffect(() => {
-  // if (pools && pools.length > 0 && poolsEvent) {
-  // setPoolList(
-  //   pools.map((pool, index) => {
-  //     const poolAddr = poolsEvent?.[index];
+  //   if (tokensPoolData && tokensPoolData.length > 0 && ScaffoldEventHistoryData) {
+  //     const newPoolList = tokensPoolData.map((pool, index) => {
+  //       console.log({ pool });
+  //       const poolAddr = pool.address;
+  //       const poolResult: PoolResult = pool.result as PoolResult;
   //
-  //     const poolResult: PoolResult = pool.result as PoolResult;
+  //       return {
+  //         address: poolAddr || "",
+  //         name: poolName ? (poolName[index].result as string) : "",
+  //         borrowedAPY: "0%",
+  //         suppliedAPY: "0%",
+  //         totalBorrowed: poolResult ? formatUnits(poolResult.totalBorrowed, 18) : "0",
+  //         totalSupplied: poolResult ? formatUnits(poolResult.totalSupplied, 18) : "0",
+  //         marketSize: poolResult ? formatUnits(poolResult.totalBorrowed + poolResult.totalSupplied, 18) : "0",
+  //       };
+  //     });
   //
-  //     return {
-  //       address: poolAddr || "",
-  //       name: poolResult ? poolResult.name : "",
-  //       borrowedAPY: "0%",
-  //       suppliedAPY: "0%",
-  //       totalBorrowed: poolResult ? formatUnits(poolResult.totalBorrowed, 18) : "0",
-  //       totalSupplied: poolResult ? formatUnits(poolResult.totalSupplied, 18) : "0",
-  //       marketSize: poolResult ? formatUnits(poolResult.totalBorrowed + poolResult.totalSupplied, 18) : "0",
-  //     };
-  //   }),
-  // );
+  //     setPoolList(newPoolList);
   //   }
-  // }, [pools]);
-  //
-  // console.log(poolList);
+  // }, [tokensPoolData, ScaffoldEventHistoryData]);
 
   return (
     <div className="w-[1450px] flex flex-col">
