@@ -2,12 +2,10 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { formatEther, formatUnits, parseAbiItem } from "viem";
+import { formatUnits } from "viem";
 import { useContractReads } from "wagmi";
-import { GetAccountResult } from "wagmi/actions";
-import { useScaffoldContract, useScaffoldContractRead, useScaffoldEventHistory } from "~~/hooks/scaffold-eth";
+import { useScaffoldContract, useScaffoldEventHistory } from "~~/hooks/scaffold-eth";
 import { Pools } from "~~/types/Pools";
-import { contracts } from "~~/utils/scaffold-eth/contract";
 
 interface PoolResult {
   name: string;
@@ -38,6 +36,8 @@ function Table() {
     fromBlock: BigInt(0),
   });
 
+  console.log(ScaffoldEventHistoryData);
+
   const { data: poolName, isLoading: poolsLoading } = useContractReads({
     contracts: ScaffoldEventHistoryData?.map(item => ({
       address: item.args.pool,
@@ -46,46 +46,45 @@ function Table() {
     })),
   });
 
+  console.log(poolName);
+
   const poolAddresses = ScaffoldEventHistoryData?.map(item => item.log.address);
 
-  const tokenData = poolAddresses
+  console.log(poolAddresses);
+
+  const createTokenDataForPools = poolAddresses
     ? poolAddresses.flatMap(address => [
         {
           address: tDAIContract?.address,
           abi: tDAIContract?.abi,
           method: "balanceOf",
-          params: [address],
+          args: [address],
         },
         {
           address: tETHContract?.address,
           abi: tETHContract?.abi,
           method: "balanceOf",
-          params: [address],
+          args: [address],
         },
         {
           address: tBTCContract?.address,
           abi: tBTCContract?.abi,
           method: "balanceOf",
-          params: [address],
+          args: [address],
         },
       ])
     : [];
-
-  // console.log(tokenData[1].params);
+  console.log(createTokenDataForPools);
 
   const { data: tokensPoolData } = useContractReads({
     contracts:
-      tokenData && ScaffoldEventHistoryData
-        ? tokenData.map(token => {
-            console.log(token.address);
-            console.log(token.abi);
-            console.log(token.method);
-            console.log(token.params);
+      createTokenDataForPools && ScaffoldEventHistoryData
+        ? createTokenDataForPools.map(tokenData => {
             return {
-              address: token.address,
-              abi: token.abi,
-              functionName: token.method,
-              params: token.params,
+              address: tokenData.address,
+              abi: tokenData.abi,
+              functionName: tokenData.method,
+              args: tokenData.args,
             };
           })
         : [],
@@ -93,26 +92,29 @@ function Table() {
 
   console.log(tokensPoolData);
   // useEffect(() => {
-  //   if (tokensPoolData && tokensPoolData.length > 0 && ScaffoldEventHistoryData) {
-  //     const newPoolList = tokensPoolData.map((pool, index) => {
-  //       console.log({ pool });
-  //       const poolAddr = pool.address;
-  //       const poolResult: PoolResult = pool.result as PoolResult;
+  // if (pools && pools.length > 0 && poolsEvent) {
+  // setPoolList(
+  //   pools.map((pool, index) => {
+  //     const poolAddr = poolsEvent?.[index];
   //
-  //       return {
-  //         address: poolAddr || "",
-  //         name: poolName ? (poolName[index].result as string) : "",
-  //         borrowedAPY: "0%",
-  //         suppliedAPY: "0%",
-  //         totalBorrowed: poolResult ? formatUnits(poolResult.totalBorrowed, 18) : "0",
-  //         totalSupplied: poolResult ? formatUnits(poolResult.totalSupplied, 18) : "0",
-  //         marketSize: poolResult ? formatUnits(poolResult.totalBorrowed + poolResult.totalSupplied, 18) : "0",
-  //       };
-  //     });
+  //     const poolResult: PoolResult = pool.result as PoolResult;
   //
-  //     setPoolList(newPoolList);
+  //     return {
+  //       address: poolAddr || "",
+  //       name: poolResult ? poolResult.name : "",
+  //       borrowedAPY: "0%",
+  //       suppliedAPY: "0%",
+  //       totalBorrowed: poolResult ? formatUnits(poolResult.totalBorrowed, 18) : "0",
+  //       totalSupplied: poolResult ? formatUnits(poolResult.totalSupplied, 18) : "0",
+  //       marketSize: poolResult ? formatUnits(poolResult.totalBorrowed + poolResult.totalSupplied, 18) : "0",
+  //     };
+  //   }),
+  // );
   //   }
-  // }, [tokensPoolData, ScaffoldEventHistoryData]);
+  // }, [pools]);
+  //
+  // console.log(poolList);
+  console.log(poolList);
 
   return (
     <div className="w-[1450px] flex flex-col">
