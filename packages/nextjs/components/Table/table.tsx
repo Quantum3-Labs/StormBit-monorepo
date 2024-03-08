@@ -36,8 +36,6 @@ function Table() {
     fromBlock: BigInt(0),
   });
 
-  console.log(ScaffoldEventHistoryData);
-
   const { data: poolName, isLoading: poolsLoading } = useContractReads({
     contracts: ScaffoldEventHistoryData?.map(item => ({
       address: item.args.pool,
@@ -49,8 +47,6 @@ function Table() {
   console.log(poolName);
 
   const poolAddresses = ScaffoldEventHistoryData?.map(item => item.log.address);
-
-  console.log(poolAddresses);
 
   const createTokenDataForPools = poolAddresses
     ? poolAddresses.flatMap(address => [
@@ -74,7 +70,6 @@ function Table() {
         },
       ])
     : [];
-  console.log(createTokenDataForPools);
 
   const { data: tokensPoolData } = useContractReads({
     contracts:
@@ -89,32 +84,33 @@ function Table() {
           })
         : [],
   });
+  console.log(createTokenDataForPools);
 
-  console.log(tokensPoolData);
-  // useEffect(() => {
-  // if (pools && pools.length > 0 && poolsEvent) {
-  // setPoolList(
-  //   pools.map((pool, index) => {
-  //     const poolAddr = poolsEvent?.[index];
-  //
-  //     const poolResult: PoolResult = pool.result as PoolResult;
-  //
-  //     return {
-  //       address: poolAddr || "",
-  //       name: poolResult ? poolResult.name : "",
-  //       borrowedAPY: "0%",
-  //       suppliedAPY: "0%",
-  //       totalBorrowed: poolResult ? formatUnits(poolResult.totalBorrowed, 18) : "0",
-  //       totalSupplied: poolResult ? formatUnits(poolResult.totalSupplied, 18) : "0",
-  //       marketSize: poolResult ? formatUnits(poolResult.totalBorrowed + poolResult.totalSupplied, 18) : "0",
-  //     };
-  //   }),
-  // );
-  //   }
-  // }, [pools]);
-  //
-  // console.log(poolList);
-  console.log(poolList);
+  useEffect(() => {
+    const _poolList = poolName?.map(({ result, ...item }, index) => {
+      const address = poolAddresses ? poolAddresses[index] : "";
+      const tokenTDAI = createTokenDataForPools ? createTokenDataForPools[index * 3] : "";
+      const tokenTETH = createTokenDataForPools ? createTokenDataForPools[index * 3 + 1] : "";
+      const tokenTBTC = createTokenDataForPools ? createTokenDataForPools[index * 3 + 2] : "";
+      return {
+        ...item,
+        name: result,
+        address: address,
+        tokenTDAI,
+        tokenTETH,
+        tokenTBTC,
+        marketSize: "0%",
+        totalSupplied: "0%",
+        borrowedAPY: "0%",
+        suppliedAPY: "0%",
+        totalBorrowed: 0,
+      };
+    });
+
+    if (_poolList) {
+      setPoolList(_poolList);
+    }
+  }, [poolName]);
 
   return (
     <div className="w-[1450px] flex flex-col">
