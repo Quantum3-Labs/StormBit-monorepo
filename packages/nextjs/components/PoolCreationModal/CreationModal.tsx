@@ -50,6 +50,8 @@ const CreationModal: React.FC<ModalProps> = ({ setIsModalOpen }) => {
     contractName: contractToken[selectedToken],
   });
 
+  console.log(selectedToken);
+
   const { data: simpleAgreementContract } = useScaffoldContract({
     contractName: "SimpleAgreement",
   });

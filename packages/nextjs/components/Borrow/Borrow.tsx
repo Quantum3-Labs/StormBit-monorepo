@@ -4,7 +4,9 @@ import Button from "../Button/Button";
 import toast from "react-hot-toast";
 import { encodeAbiParameters, parseEther } from "viem";
 import { useAccount, useContractWrite } from "wagmi";
-import { useScaffoldContract, useScaffoldContractRead, useScaffoldEventHistory } from "~~/hooks/scaffold-eth";
+import DropdownButton from "~~/components/DropdownButton/DropdownButton";
+import { useScaffoldContract } from "~~/hooks/scaffold-eth";
+import { ContractName } from "~~/utils/scaffold-eth/contract";
 
 interface baseAgreementConfig {
   paymentSchedule: bigint;
@@ -21,6 +23,7 @@ interface BorrowProps {
 function Borrow({ poolAddress }: BorrowProps) {
   const [selectedAgreement, setSelectedAgreement] = useState<string>("baseChain");
   const [timeUnit, setTimeUnit] = useState<string>("month");
+  const [selectedToken, setSelectedToken] = useState("ETH");
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [borrowConfig, setBorrowConfig] = useState<borrowConfig>({
     amount: BigInt(0),
@@ -31,12 +34,21 @@ function Borrow({ poolAddress }: BorrowProps) {
     },
   });
   const { address } = useAccount();
+
+  const contractToken: Record<string, ContractName> = {
+    ETH: "tETH",
+    BTC: "tBTC",
+    DAI: "tDAI",
+  };
+
+  const { data: token } = useScaffoldContract({
+    contractName: contractToken[selectedToken],
+  });
+
   const { data: LendingContract } = useScaffoldContract({
     contractName: "StormBitLending",
   });
-  const { data: tokenContract } = useScaffoldContract({
-    contractName: "MockToken",
-  });
+
   const { data: simpleAgreementContract } = useScaffoldContract({
     contractName: "SimpleAgreement",
   });
@@ -48,7 +60,7 @@ function Borrow({ poolAddress }: BorrowProps) {
   };
 
   const { data: requestLoanData, write: submitRequestLoan } = useContractWrite(
-    tokenContract && address
+    token && address
       ? {
           address: poolAddress,
           abi: LendingContract?.abi,
@@ -56,7 +68,7 @@ function Borrow({ poolAddress }: BorrowProps) {
           args: [
             {
               amount: parseEther("1000"),
-              token: tokenContract ? tokenContract.address : "",
+              token: token ? token.address : "",
               agreement: simpleAgreementContract ? simpleAgreementContract.address : "",
               agreementCalldata: encodeAbiParameters(
                 [
@@ -70,7 +82,7 @@ function Borrow({ poolAddress }: BorrowProps) {
                   //TODO：add interest to amount
                   parseEther(borrowConfig.amount.toString()),
                   address,
-                  tokenContract?.address,
+                  token?.address,
                   Array.from({ length: Number(borrowConfig.baseAgreementSettings.paymentSchedule) }, () =>
                     parseEther(
                       (
@@ -91,6 +103,7 @@ function Borrow({ poolAddress }: BorrowProps) {
         }
       : {},
   );
+
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen);
   };
@@ -117,26 +130,9 @@ function Borrow({ poolAddress }: BorrowProps) {
             onChange={e => setBorrowConfig({ ...borrowConfig, amount: BigInt(e.target.value) })}
             type="number"
             className="p-1 focus:outline-none w-[500px] border-none"
-          ></input>
-          <div className="flex items-center justify-center px-1">
-            <ul className="main-menu">
-              <li className="relative main-menu-item">
-                <button onClick={toggleDropdown} className="flex items-center justify-center gap-1 dropdown-trigger">
-                  <Image src="/USDT.png" alt="ether" width={17} height={17}></Image>
-                  USDT<span className="arrow-down">&#9662;</span>
-                </button>
-                {isDropdownOpen && (
-                  <ul className="dropdown-menu">
-                    <li>
-                      <a href="#"> USDT</a>
-                    </li>
-                    <li>
-                      <a href="#"> USDT</a>
-                    </li>
-                  </ul>
-                )}
-              </li>
-            </ul>
+          />
+          <div className="px-[10px]">
+            <DropdownButton selectedToken={selectedToken} setSelectedToken={setSelectedToken} />
           </div>
         </div>
         <span className="text-xs">Balance 0.001 ETH</span>

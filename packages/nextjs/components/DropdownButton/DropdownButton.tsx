@@ -9,13 +9,11 @@ interface DropdownButtonProps {
 function DropdownButton({ selectedToken, setSelectedToken }: DropdownButtonProps) {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
 
-  const toggleDropdown = event => {
-    event.preventDefault();
+  const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen);
   };
 
-  const handleTokenSelection = (token: string) => event => {
-    event.preventDefault();
+  const handleTokenSelection = (token: string) => {
     setSelectedToken(token);
     setDropdownOpen(false);
   };
@@ -35,7 +33,11 @@ function DropdownButton({ selectedToken, setSelectedToken }: DropdownButtonProps
 
   return (
     <div className="relative">
-      <button onClick={toggleDropdown} className="flex items-center justify-center dropdown-trigger gap-[5px]">
+      <button
+        type="button"
+        onClick={toggleDropdown}
+        className="flex items-center justify-center dropdown-trigger gap-[5px]"
+      >
         {selectedToken && <Image src={getIcon(selectedToken)} alt={`icon ${selectedToken}`} width={17} height={17} />}
         {selectedToken}
         <span className="arrow-down">&#9662;</span>
@@ -45,19 +47,23 @@ function DropdownButton({ selectedToken, setSelectedToken }: DropdownButtonProps
           {selectedToken !== "ETH" && (
             <li className="flex gap-[5px] items-center">
               <Image src="/logo-eth.png" alt="icon eth" width={17} height={17} />
-              <button onClick={handleTokenSelection("ETH")}>ETH</button>
+              <button onClick={() => handleTokenSelection("ETH")}>ETH</button>
             </li>
           )}
           {selectedToken !== "BTC" && (
             <li className="flex gap-[5px] items-center">
               <Image src="/btc-logo.png" alt="icon btc" width={18} height={18} />
-              <button onClick={handleTokenSelection("BTC")}>BTC</button>
+              <button type="button" onClick={() => handleTokenSelection("BTC")}>
+                BTC
+              </button>
             </li>
           )}
           {selectedToken !== "DAI" && (
             <li className="flex gap-[5px] items-center">
               <Image src="/dai.png" alt="icon dai" width={17} height={17} />
-              <button onClick={handleTokenSelection("DAI")}>DAI</button>
+              <button type="button" onClick={() => handleTokenSelection("DAI")}>
+                DAI
+              </button>
             </li>
           )}
         </ul>
