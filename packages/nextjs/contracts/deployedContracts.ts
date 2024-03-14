@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   11155111: {
     SimpleAgreement: {
-      address: "0xA13BDb8E4b94d4514a9D3eE00A15dD2d924E0102",
+      address: "0x0C4Fcfd9a0Fc8BA08ca6230c422FC590ffd35F08",
       abi: [
         {
           inputs: [],
@@ -58,6 +58,19 @@ const deployedContracts = {
               internalType: "uint256[]",
               name: "",
               type: "uint256[]",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "hasWithdrawn",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
             },
           ],
           stateMutability: "view",
@@ -196,6 +209,7 @@ const deployedContracts = {
       inheritedFunctions: {
         borrower: "contracts/AgreementBedrock.sol",
         getPaymentDates: "contracts/AgreementBedrock.sol",
+        hasWithdrawn: "contracts/AgreementBedrock.sol",
         initialize: "contracts/AgreementBedrock.sol",
         isLoanFinished: "contracts/AgreementBedrock.sol",
         lateFee: "contracts/AgreementBedrock.sol",
@@ -209,7 +223,7 @@ const deployedContracts = {
       },
     },
     StormBitCore: {
-      address: "0xBb4fE1543e155fAC270A7fe4Aa5E463845b8A6dC",
+      address: "0x3093dE011c3d3E479AD56550a5C964aeB3B5Eb48",
       abi: [
         {
           inputs: [
@@ -486,7 +500,7 @@ const deployedContracts = {
       },
     },
     StormBitLending: {
-      address: "0x2b61D7D115c83A852a48aC9eBCa03EAE234084c5",
+      address: "0x4d0254F1E9043f9628C876f6E9732aA2B180ca45",
       abi: [
         {
           inputs: [],
@@ -2591,7 +2605,7 @@ const deployedContracts = {
       },
     },
     StormBitLendingVotes: {
-      address: "0x77997c173aC9d734Dce4A9ee10f7812c407aC9f9",
+      address: "0x4630cF11fbF63B219bC2EcFD9563822eCaDFfe59",
       abi: [
         {
           inputs: [],
@@ -3634,7 +3648,7 @@ const deployedContracts = {
       },
     },
     tBTC: {
-      address: "0x66a788359c3b1f03C0340b508FE19b636FF5F33f",
+      address: "0x3021239E60171D2Cf1C2E556D07984a1ca1305e5",
       abi: [
         {
           inputs: [],
@@ -3971,7 +3985,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     tDAI: {
-      address: "0xDd5Aa88886AE84a6248864d5d74825345f745880",
+      address: "0xB6D8E338f59CfDfb85F112a7a27E23cE73AC7186",
       abi: [
         {
           inputs: [],
@@ -4308,7 +4322,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     tETH: {
-      address: "0x02Fbc2D01A99D198B2aa4Bc73b58B27A95642Fb4",
+      address: "0x108e9fE7e80f104A4181faA70beABAE60f13AC7F",
       abi: [
         {
           inputs: [],

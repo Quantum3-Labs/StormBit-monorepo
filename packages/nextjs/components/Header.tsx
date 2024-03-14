@@ -16,8 +16,8 @@ type HeaderMenuLink = {
 
 export const menuLinks: HeaderMenuLink[] = [
   {
-    label: "Markets",
-    href: "/markets",
+    label: "Pools",
+    href: "/pools",
   },
   {
     label: "Portfolio",
@@ -34,7 +34,7 @@ export const HeaderMenuLinks = () => {
         const isActive = pathname === href;
         return (
           <li key={href}>
-            <Link href={href} passHref className={`${isActive ? "bg-letter" : "text-[#4A5056]"} `}>
+            <Link href={href} passHref className={`${isActive ? "bg-letter" : "text-[#ffffff]"} `}>
               <span>{label}</span>
             </Link>
           </li>
@@ -68,7 +68,6 @@ export const Header = () => {
     args: [account.address, parseEther("1000")],
   });
 
-
   // const balanceDai = balanceDAI !== undefined ? formatEther(balanceDAI) : "Cargando...";
   // const balanceBtc = balanceBTC !== undefined ? formatEther(balanceBTC) : "Cargando...";
   // const balanceEth = balanceETH !== undefined ? formatEther(balanceETH) : "Cargando...";
@@ -80,10 +79,8 @@ export const Header = () => {
       args: [account.address],
       watch: true,
     });
-    return balanceData !== undefined ? formatEther(balanceData) : "Cargando...";
+    return balanceData !== undefined ? formatEther(balanceData) : "0";
   };
-
-
 
   const balanceDai = getFormattedBalance("tDAI", account);
   const balanceBtc = getFormattedBalance("tBTC", account);
@@ -93,63 +90,60 @@ export const Header = () => {
 
   return (
     <>
-      <div className="sticky top-0 z-20 justify-between flex-shrink-0 min-h-0 p-6 shadow-md lg:static navbar bg-base-100 sm:px-2">
+      <div className="sticky top-0 z-20 justify-between flex-shrink-0 min-h-0 p-6 text-white bg-transparent shadow-md lg:static navbar sm:px-2">
         <div className="flex gap-3">
           <Link href="/" passHref className="items-center hidden gap-2 ml-4 mr-6 lg:flex shrink-0">
             <div>
-              <Image src="/logo.png" alt="logo" width={57} height={47} className="w-auto h-auto" priority></Image>
+              <Image src="/logo.png" alt="logo" width={142} height={65} className="w-auto h-auto" priority></Image>
             </div>
           </Link>
           <ul className="hidden gap-8 px-1 text-xl lg:flex lg:flex-nowrap">
             <HeaderMenuLinks />
           </ul>
         </div>
-        <div className="flex gap-[10px] ">
-          <div className="flex gap-[10px]">
-            <button
-              className="border border-red-300 border-solid min-w-[70px] w-full rounded-sm "
-              onClick={() => {
-                mintDAI();
-              }}
-            >
-              Mint DAI
-            </button>
-            <button
-              className="border border-red-300 border-solid min-w-[70px] w-full rounded-sm"
-              onClick={() => {
-                mintETH();
-              }}
-            >
-              Mint ETH
-            </button>
-            <button
-              className="border border-red-300 border-solid min-w-[70px] w-full rounded-sm"
-              onClick={() => {
-                mintBTC();
-              }}
-            >
-              Mint BTC
-            </button>
-          </div>
-          <div className="flex gap-[20px]">
-            <div className="flex items-center gap-[5px]">
-              <span>Balance DAI: </span>
-              <span>{balanceDai}</span>
-            </div>
-            <div className="flex items-center gap-[5px]">
-              <span>Balance ETH: </span>
-              <span>{balanceEth}</span>
-            </div>
-            <div className="flex items-center gap-[5px]">
-              <span>Balance BTC: </span>
-              <span>{balanceBtc}</span>
+        <div className="flex-grow gap-8 mr-4 navbar-end">
+          <div className="flex gap-[10px] ">
+            <div className="flex gap-[20px]">
+              <div className="flex flex-col items-center gap-[6px]">
+                <button
+                  className="border min-w-[90px] w-full rounded-xl px-2"
+                  onClick={() => {
+                    mintDAI();
+                  }}
+                >
+                  Mint DAI
+                </button>
+                <span>Balance DAI: {balanceDai} </span>
+              </div>
+              <div className="flex flex-col items-center gap-[6px]">
+                <button
+                  className="border min-w-[90px] w-full rounded-xl px-2"
+                  onClick={() => {
+                    mintETH();
+                  }}
+                >
+                  Mint ETH
+                </button>
+                <span>Balance ETH: {balanceEth}</span>
+              </div>
+              <div className="flex flex-col items-center gap-[6px]">
+                <button
+                  className="border min-w-[90px] w-full rounded-xl px-2"
+                  onClick={() => {
+                    mintBTC();
+                  }}
+                >
+                  Mint BTC
+                </button>
+                <span>Balance BTC: {balanceBtc}</span>
+              </div>
             </div>
           </div>
-
-        </div>
-        <div className="flex-grow mr-4 navbar-end">
-          <RainbowKitCustomConnectButton/>
-          <FaucetButton/>
+          <Link href="/register" className="border w-[150px] rounded-xl px-2">
+            Launch App
+          </Link>
+          <RainbowKitCustomConnectButton />
+          <FaucetButton />
         </div>
       </div>
     </>

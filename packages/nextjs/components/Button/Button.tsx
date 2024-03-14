@@ -11,7 +11,7 @@ const Button = ({ children, size = "small", onClick }: ButtonProps) => {
   return (
     <button
       onClick={onClick}
-      className={`text-white text-base bg-[#17344F] my-10 base_button__${isSmall ? "small" : "large"}`}
+      className={`text-white text-base bg-[#9135F5] my-10 base_button__${isSmall ? "small" : "large"}`}
     >
       {children}
     </button>

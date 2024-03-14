@@ -6,101 +6,141 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./interfaces/IAgreement.sol";
 
 abstract contract AgreementBedrock is IAgreement, Initializable {
-    // first elements in storage use Storage s lot in the future. for better security
-    // basic agreement components
-    uint256 internal _lateFee;
-    address internal _paymentToken;
-    address internal _lender;
-    address internal _borrower;
-    bool internal _hasPenalty;
-    uint256[] internal _amounts;
-    uint256[] internal _times;
+	// first elements in storage use Storage s lot in the future. for better security
+	// basic agreement components
+	uint256 internal _lateFee;
+	address internal _paymentToken;
+	address internal _lender;
+	address internal _borrower;
+	bool internal _hasPenalty;
+	uint256[] internal _amounts;
+	uint256[] internal _times;
 
-    uint256 internal _paymentCount = 0;
+	uint256 internal _paymentCount = 0;
 
-    modifier onlyBorrower() {
-        require(msg.sender == _borrower, "AgreementBedrock: not borrower");
-        _;
-    }
+	bool public hasWithdrawn = false;
 
-    constructor() {
-        _disableInitializers();
-    }
+	modifier onlyBorrower() {
+		require(msg.sender == _borrower, "AgreementBedrock: not borrower");
+		_;
+	}
 
-    function initialize(bytes memory initData) public virtual override initializer {
-        (uint256 lateFee, address borrower, address PaymentToken, uint256[] memory amounts, uint256[] memory times) =
-            abi.decode(initData, (uint256, address, address, uint256[], uint256[]));
-        _lateFee = lateFee;
-        _lender = msg.sender; // lender deploys this, aka lending pool
-        _borrower = borrower;
-        _paymentToken = PaymentToken;
-        _amounts = amounts;
-        _times = times;
-    }
+	constructor() {
+		_disableInitializers();
+	}
 
-    function lateFee() public view virtual override returns (uint256) {
-        return _lateFee;
-    }
+	function initialize(
+		bytes memory initData
+	) public virtual override initializer {
+		(
+			uint256 lateFee,
+			address borrower,
+			address PaymentToken,
+			uint256[] memory amounts,
+			uint256[] memory times
+		) = abi.decode(
+				initData,
+				(uint256, address, address, uint256[], uint256[])
+			);
+		_lateFee = lateFee;
+		_lender = msg.sender; // lender deploys this, aka lending pool
+		_borrower = borrower;
+		_paymentToken = PaymentToken;
+		_amounts = amounts;
+		_times = times;
+	}
 
-    function paymentToken() public view virtual override returns (address) {
-        return _paymentToken;
-    }
+	function lateFee() public view virtual override returns (uint256) {
+		return _lateFee;
+	}
 
-    function lender() public view virtual override returns (address) {
-        return _lender;
-    }
+	function paymentToken() public view virtual override returns (address) {
+		return _paymentToken;
+	}
 
-    function borrower() public view virtual override returns (address) {
-        return _borrower;
-    }
+	function lender() public view virtual override returns (address) {
+		return _lender;
+	}
 
-    function nextPayment() public view virtual override returns (uint256, uint256) {
-        return (_amounts[_paymentCount], _times[_paymentCount]);
-    }
+	function borrower() public view virtual override returns (address) {
+		return _borrower;
+	}
 
-    function getPaymentDates() public view virtual override returns (uint256[] memory, uint256[] memory) {
-        return (_amounts, _times);
-    }
+	function nextPayment()
+		public
+		view
+		virtual
+		override
+		returns (uint256, uint256)
+	{
+		if (isLoanFinished() || !hasWithdrawn) {
+			return (0, 0);
+		}
+		return (_amounts[_paymentCount], _times[_paymentCount]);
+	}
 
-    function totalLoanAmount() public view virtual override returns (uint256) {
-        uint256 total = 0;
-        for (uint256 i = 0; i < _amounts.length; ++i) {
-            total += _amounts[i];
-        }
-        return total;
-    }
+	function getPaymentDates()
+		public
+		view
+		virtual
+		override
+		returns (uint256[] memory, uint256[] memory)
+	{
+		return (_amounts, _times);
+	}
 
-    function isLoanFinished() public view virtual override returns (bool) {
-        return _paymentCount == _amounts.length;
-    }
+	function totalLoanAmount() public view virtual override returns (uint256) {
+		uint256 total = 0;
+		for (uint256 i = 0; i < _amounts.length; ++i) {
+			total += _amounts[i];
+		}
+		return total;
+	}
 
-    function payBack() public override returns (bool) {
-        (uint256 amount,) = nextPayment();
-        uint256 fee = penalty();
-        IERC20(_paymentToken).transfer(address(this), amount + fee);
-        _paymentCount++;
-        if (isLoanFinished()) {
-            _afterLoan();
-        }
-        return true;
-    }
+	function isLoanFinished() public view virtual override returns (bool) {
+		return _paymentCount == _amounts.length;
+	}
 
-    function penalty() public view override returns (uint256) {
-        (uint256 amount, uint256 time) = nextPayment();
-        if (_hasPenalty || time < block.timestamp) {
-            return (_lateFee);
-        }
-        return 0;
-    }
+	function payBack() public override returns (bool) {
+		(uint256 amount, ) = nextPayment();
+		uint256 fee = penalty();
+		IERC20(_paymentToken).transferFrom(
+			msg.sender,
+			address(this),
+			amount + fee
+		);
+		_paymentCount++;
+		if (isLoanFinished()) {
+			_afterLoan();
+			IERC20(_paymentToken).transfer(
+				_lender,
+				IERC20(_paymentToken).balanceOf(address(this))
+			);
+		}
+		return true;
+	}
 
-    function withdraw() external virtual override onlyBorrower {
-        _beforeLoan();
-        IERC20(_paymentToken).transfer(_borrower, IERC20(_paymentToken).balanceOf(address(this)));
-    }
+	function penalty() public view override returns (uint256) {
+		(uint256 amount, uint256 time) = nextPayment();
+		if (_hasPenalty || time < block.timestamp) {
+			return (_lateFee);
+		}
+		return 0;
+	}
 
-    // -------------------- CUSTOM FUNCTIONS --------------------
+	function withdraw() external virtual override onlyBorrower {
+		require(!hasWithdrawn, "Withdraw already executed");
+		_beforeLoan();
+		IERC20(_paymentToken).transfer(
+			_borrower,
+			IERC20(_paymentToken).balanceOf(address(this))
+		);
+		hasWithdrawn = true;
+	}
 
-    function _beforeLoan() internal virtual;
+	// -------------------- CUSTOM FUNCTIONS --------------------
 
-    function _afterLoan() internal virtual;
+	function _beforeLoan() internal virtual;
+
+	function _afterLoan() internal virtual;
 }

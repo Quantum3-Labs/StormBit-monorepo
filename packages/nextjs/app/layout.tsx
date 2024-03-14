@@ -36,9 +36,6 @@ export const metadata: Metadata = {
     },
     description: "Built by Q3 Labs using 🏗 Scaffold-ETH 2",
   },
-  icons: {
-    icon: [{ url: "/favicon.png", sizes: "32x32", type: "image/png" }],
-  },
 };
 
 const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {

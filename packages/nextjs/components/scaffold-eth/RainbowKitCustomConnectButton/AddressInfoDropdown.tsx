@@ -50,12 +50,12 @@ export const AddressInfoDropdown = ({
           className=" flex items-center border border-solid rounded-[13px] btn-sm pl-0 pr-2 dropdown-toggle gap-0 !h-auto"
         >
           <BlockieAvatar address={address} size={30} ensImage={ensAvatar} />
-          <span className="ml-2 mr-1">{displayName}</span>
+          <span className="ml-2 mr-1 text-xl">{displayName}</span>
           <ChevronDownIcon className="w-4 h-6 ml-2 sm:ml-0" />
         </summary>
         <ul
           tabIndex={0}
-          className="dropdown-content menu z-[2] p-2 mt-2 shadow-center shadow-accent bg-base-200 rounded-box gap-1"
+          className="dropdown-content menu z-[2] p-2 mt-2 shadow-center shadow-accent bg-transparent rounded-box gap-1"
         >
           <NetworkOptions hidden={!selectingNetwork} />
           <li className={selectingNetwork ? "hidden" : ""}>

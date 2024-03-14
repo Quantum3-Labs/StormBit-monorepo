@@ -1,43 +1,141 @@
-export interface Data {
-  id: string;
-  pool: string;
-  agreement: string[];
-  date: string;
-  amount: string;
-  penalty: string;
-  interest: string;
-  status: string;
+interface Data {
+  name: string;
+  supply: number;
+  borrow: number;
+  usage: number;
 }
 
 export const data: Data[] = [
   {
-    id: "1",
-    pool: "Cheap Local Lending",
-    agreement: ["Base", "NFT", "FT"],
-    date: "10-01-2024",
-    amount: "$10.01",
-    penalty: "11.8",
-    interest: "11.8",
-    status: "Pending",
+    name: "Community Credit Pool",
+    supply: 20,
+    borrow: 2,
+    usage: 80,
   },
   {
-    id: "2",
-    pool: "Cheap Local Lending",
-    agreement: ["NFT"],
-    date: "10-01-2024",
-    amount: "$10.01",
-    penalty: "11.8",
-    interest: "11.8",
-    status: "Active",
+    name: "Community Credit Pool",
+    supply: 20,
+    borrow: 2,
+    usage: 19,
   },
   {
-    id: "3",
-    pool: "Cheap Local Lending",
-    agreement: ["Base", "FT"],
-    date: "10-01-2024",
-    amount: "$10.01",
-    penalty: "11.8",
-    interest: "11.8",
-    status: "Rejected",
+    name: "Community Credit Pool",
+    supply: 20,
+    borrow: 2,
+    usage: 15,
+  },
+  {
+    name: "Community Credit Pool",
+    supply: 20,
+    borrow: 2,
+    usage: 17,
+  },
+  {
+    name: "Community Credit Pool",
+    supply: 20,
+    borrow: 2,
+    usage: 18,
+  },
+  {
+    name: "Community Credit Pool",
+    supply: 20,
+    borrow: 2,
+    usage: 10,
+  },
+  {
+    name: "Community Credit Pool",
+    supply: 20,
+    borrow: 2,
+    usage: 11,
+  },
+  {
+    name: "Community Credit Pool",
+    supply: 20,
+    borrow: 2,
+    usage: 12,
+  },
+  {
+    name: "Community Credit Pool",
+    supply: 20,
+    borrow: 2,
+    usage: 11,
+  },
+  {
+    name: "Community Credit Pool",
+    supply: 20,
+    borrow: 2,
+    usage: 13,
+  },
+  {
+    name: "Community Credit Pool",
+    supply: 20,
+    borrow: 2,
+    usage: 14,
+  },
+  {
+    name: "Community Credit Pool",
+    supply: 20,
+    borrow: 2,
+    usage: 15,
+  },
+  {
+    name: "Community Credit Pool",
+    supply: 20,
+    borrow: 2,
+    usage: 12,
+  },
+  {
+    name: "Community Credit Pool",
+    supply: 20,
+    borrow: 2,
+    usage: 11,
+  },
+  {
+    name: "Community Credit Pool",
+    supply: 20,
+    borrow: 2,
+    usage: 13,
+  },
+  {
+    name: "Community Credit Pool",
+    supply: 20,
+    borrow: 2,
+    usage: 14,
+  },
+  {
+    name: "Community Credit Pool",
+    supply: 20,
+    borrow: 2,
+    usage: 15,
+  },
+  {
+    name: "Community Credit Pool",
+    supply: 20,
+    borrow: 2,
+    usage: 70,
+  },
+  {
+    name: "Community Credit Pool",
+    supply: 20,
+    borrow: 2,
+    usage: 11,
+  },
+  {
+    name: "Community Credit Pool",
+    supply: 20,
+    borrow: 2,
+    usage: 13,
+  },
+  {
+    name: "Community Credit Pool",
+    supply: 20,
+    borrow: 2,
+    usage: 14,
+  },
+  {
+    name: "Community Credit Pool",
+    supply: 20,
+    borrow: 2,
+    usage: 15,
   },
 ];

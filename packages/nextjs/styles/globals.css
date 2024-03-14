@@ -9,6 +9,7 @@
 
 body {
   min-height: 100vh;
+  background: #070817;
 }
 
 h1,
@@ -25,7 +26,7 @@ p {
 
 
 main{
-  background: radial-gradient(136.07% 90.79% at 10.34% 118.9%, rgba(197, 255, 253, 0.46) 0%, rgba(246, 248, 251, 0.46) 100%), radial-gradient(90.3% 61.32% at 83.83% 95.17%, #EEE4FE 0%, #F6F8FB 100%);
+  background: transparent;
 }
 
 input{
@@ -70,3 +71,61 @@ input{
 .height-market{
   height: fit-content;
 }
+
+.bg-landing{
+  width: 100%;
+  background-image: url('/bg-landing.png');
+  background-position: top;
+  background-repeat: no-repeat;
+  /* backdrop-filter: blur(26.238304138183594px); */
+}
+
+.metrics{
+  background-image: url('/rectangle.png');
+}
+
+.extensions{
+  border-radius: 9px;
+  border: 4.373px solid rgba(255, 255, 255, 0.20);
+  background: linear-gradient(226deg, rgba(107, 107, 107, 0.40) 0%, rgba(35, 35, 35, 0.40) 98.6%);
+  backdrop-filter: blur(26.238304138183594px);
+}
+
+.roadmap{
+  width: 100vw;
+  padding-block-start: 10rem;
+  height: fit-content;
+  background-image: url('/roadd.png');
+  background-size: cover;
+  background-position: center;
+}
+
+.credit{
+  background: linear-gradient(154deg, rgba(121, 117, 131, 0.20) 5.35%, rgba(54, 53, 103, 0.20) 83.85%), rgba(49, 48, 54, 0.30);
+  stroke-width: 2px;
+  stroke: rgba(0, 0, 0, 0.20);
+  backdrop-filter: blur(7px);
+}
+
+.bg-form{
+  width: 100vw;
+  background-image: url('/bg-form.png');
+  background-size: cover;
+}
+
+.container-subscribe{
+  border-radius: 20px;
+  background-image: url('/Card.png');
+  background-size: cover;
+  /* box-shadow: 5px 5px 30px 0px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(2px); */
+}
+
+.container-total{
+  background: linear-gradient(154deg, rgba(121, 117, 131, 0.20) 5.35%, rgba(54, 53, 103, 0.20) 83.85%), rgba(49, 48, 54, 0.00);
+  border-width: 2px;
+  border-color: rgba(0, 0, 0, 0.20);
+  backdrop-filter: blur(7px);
+  border-radius: 1rem;
+}
+
