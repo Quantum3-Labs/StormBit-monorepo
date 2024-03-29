@@ -1,8 +1,8 @@
 import React from "react";
 import Image from "next/image";
 import Button from "../Button/Button";
-import { AiOutlineClose } from "react-icons/ai";
 import SelectDestination from "../SelectDestination/SelectDestination";
+import { AiOutlineClose } from "react-icons/ai";
 
 interface ModalProps {
   setIsModalWithdraw: () => void;

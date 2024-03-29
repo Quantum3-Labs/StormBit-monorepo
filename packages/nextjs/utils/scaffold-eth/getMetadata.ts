@@ -11,7 +11,7 @@ export const getMetadata = ({
 }): Metadata => {
   const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
     ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-    : `http://localhost:${process.env.PORT}`;
+    : `http://localhost:${process.env.PORT || 3000}`;
   const imageUrl = `${baseUrl}${imageRelativePath}`;
   return {
     title: title,

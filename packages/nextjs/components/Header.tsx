@@ -4,11 +4,11 @@ import { usePathname } from "next/navigation";
 import { CiDesktopMouse1, CiWallet } from "react-icons/ci";
 import { LiaDotCircleSolid } from "react-icons/lia";
 import { TfiBook } from "react-icons/tfi";
-import { formatEther, parseEther } from "viem";
-import { PublicClient, useAccount } from "wagmi";
-import { GetAccountResult } from "wagmi/dist/actions";
+import { parseEther } from "viem";
+import { useAccount } from "wagmi";
 import { FaucetButton, RainbowKitCustomConnectButton } from "~~/components/scaffold-eth";
-import { useScaffoldContractRead, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
+import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
+import useFormattedBalance from "~~/hooks/scaffold-eth/useFormattedBalance";
 
 type HeaderMenuLink = {
   label: string;
@@ -88,19 +88,9 @@ export const Header = () => {
   // const balanceBtc = balanceBTC !== undefined ? formatEther(balanceBTC) : "Cargando...";
   // const balanceEth = balanceETH !== undefined ? formatEther(balanceETH) : "Cargando...";
 
-  const getFormattedBalance = (contractName: string, account: GetAccountResult<PublicClient>) => {
-    const { data: balanceData } = useScaffoldContractRead({
-      contractName,
-      functionName: "balanceOf",
-      args: [account.address],
-      watch: true,
-    });
-    return balanceData !== undefined ? formatEther(balanceData) : "0";
-  };
-
-  const balanceDai = getFormattedBalance("tDAI", account);
-  const balanceBtc = getFormattedBalance("tBTC", account);
-  const balanceEth = getFormattedBalance("tETH", account);
+  const balanceDai = useFormattedBalance("tDAI", account);
+  const balanceBtc = useFormattedBalance("tBTC", account);
+  const balanceEth = useFormattedBalance("tETH", account);
 
   // console.log(balanceDai,balanceBtc,balanceEth)
 

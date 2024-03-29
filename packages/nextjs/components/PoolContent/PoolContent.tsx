@@ -70,14 +70,14 @@ export default function PoolContent() {
           onChange={setCurrentPage}
           classNames={{
             base: "",
-            prev: "prev-classes", // prev button classes
+            prev: "prev-classes",
             item: "item-classes bg-transparent text-white border border-[#BCBCBC] w-[64px] h-[64px] rounded-[6px] gap",
-            next: "next-classes", // next button classes
-            cursor: "cursor-classes bg-[#9135F5] w-[64px] h-[64px] rounded-[6px]", // this is the one that moves when an item is selected
-            forwardIcon: "forward-icon-classes", // forward icon
-            ellipsis: "ellipsis-classes", // ellipsis icon
+            next: "next-classes",
+            cursor: "cursor-classes bg-[#9135F5] w-[64px] h-[64px] rounded-[6px]",
+            forwardIcon: "forward-icon-classes",
+            ellipsis: "ellipsis-classes",
             chevronNext: "chevron-next-classes",
-            wrapper:"gap-4" // chevron next icon
+            wrapper: "gap-4;",
           }}
         />
         <Button

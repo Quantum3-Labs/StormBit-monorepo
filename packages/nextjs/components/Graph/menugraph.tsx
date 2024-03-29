@@ -1,13 +1,17 @@
-import React, { useState } from "react";
-import { menu } from "./items";
+import React, { ReactNode, useState } from "react";
 import { DownOutlined } from "@ant-design/icons";
-import { Button, Dropdown } from "antd";
+import { Button, Dropdown, Menu } from "antd";
 import { createUseStyles } from "react-jss";
 
+export interface Category {
+  key: number;
+  content: ReactNode;
+  value: string;
+}
 /**
  * Add your all dropdown categories here with unique key
  */
-const dropdownCategories = [
+const dropdownCategories: Category[] = [
   {
     key: 0,
     content: "Today",
@@ -54,27 +58,39 @@ const useStyles = createUseStyles(() => ({
     },
   },
 }));
-
-export const DropdownSelector = ({ fetchCustomData }) => {
+interface DropdownSelectorProps {
+  fetchCustomData: (key: Category) => void;
+}
+export const DropdownSelector: React.FC<DropdownSelectorProps> = ({ fetchCustomData }) => {
   const classes = useStyles();
 
   // This state is used to track selected value from dropdown
   const [activeTimeFrame, setActiveTimeFrame] = useState(2);
 
-  const handleDataFetching = (key: number, value: any) => {
+  const handleDataFetching = (key: number) => {
     setActiveTimeFrame(key);
     /**
      * This function invokes when user selectes an item from dropdown,
      * you can call a function to fetch data with key or value
      * @here we called @function fetchCustomData(value)
      */
-    fetchCustomData(value);
+    fetchCustomData(dropdownCategories[key]);
   };
 
   return (
     <div className={classes.container}>
       <Dropdown
-        overlay={menu(handleDataFetching, dropdownCategories, dropdownCategories[activeTimeFrame])}
+        overlay={
+          <Menu>
+            {dropdownCategories.map((item: Category) => {
+              return (
+                <Menu.Item onClick={() => handleDataFetching(item.key)} key={item.key}>
+                  {item.content}
+                </Menu.Item>
+              );
+            })}
+          </Menu>
+        }
         className="bg-none"
       >
         <Button>

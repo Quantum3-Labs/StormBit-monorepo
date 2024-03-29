@@ -39,7 +39,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
         } bg-[#17172B] px-4 py-2 text-sm font-medium text-white hover:bg-[#25253E]  focus:ring-[#374B6D]`}
         onClick={() => setIsOpen(!isOpen)}
       >
-        {selectedValue ? options.find(option => option.value === selectedValue)?.label : placeholder}
+        {selectedValue ? options?.find(option => option.value === selectedValue)?.label : placeholder}
         <ChevronDownIcon className={`-mr-1 ml-2 h-5 w-5 ${isOpen ? "transform rotate-180" : ""}`} aria-hidden="true" />
       </button>
       {isOpen && (

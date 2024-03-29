@@ -34,7 +34,7 @@ const Home: NextPage = () => {
             <div className="flex items-center justify-center w-full gap-32">
               <span className="max-w-[770px] w-full text-[28px] text-white">
                 Empower financial inclusivity with a dynamic, blockchain-enhanced trust score that evolves with your
-                financial interactions
+                financial interactions.
               </span>
               <Image src="/marketing-strategy.png" alt="marketing image" width={532} height={416} />
             </div>

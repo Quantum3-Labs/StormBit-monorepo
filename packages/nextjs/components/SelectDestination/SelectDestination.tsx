@@ -2,8 +2,12 @@ import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { AiOutlineClose } from "react-icons/ai";
 
+interface Option {
+  name: string;
+  icon: string;
+}
 function SelectDestination() {
-  const options = [
+  const options: Option[] = [
     {
       name: "Avalanche",
       icon: "/avalanche.png",
@@ -25,17 +29,18 @@ function SelectDestination() {
       icon: "/starknet.png",
     },
   ];
-  const [selectedOption, setSelectedOption] = useState(null);
+  // const options = ["Avalanche", "Arbitrum", "Ethereum", "Optimism", "Starknet"];
+  const [selectedOption, setSelectedOption] = useState<Option | null>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const handleOptionClick = option => {
+  const handleOptionClick = (option: Option) => {
     setSelectedOption(option);
     setIsOpen(false);
   };
 
-  const handleClickOutside = event => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+  const handleClickOutside = (event: MouseEvent) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
       setIsOpen(false);
     }
   };

@@ -1,22 +1,11 @@
 import "./modalPay.css";
 import Button from "~~/components/Button/Button";
-import { useScaffoldContract } from "~~/hooks/scaffold-eth";
 
 interface ModalProps {
   setModalPay: () => void;
 }
 
 function ModalPay({ setModalPay }: ModalProps) {
-
-
-  const { data: LendingContract } = useScaffoldContract({
-    contractName: "StormBitLending",
-  });
-
-  const { data: SimpleAgreementContract } = useScaffoldContract({
-    contractName: "SimpleAgreement",
-  });
-
   return (
     <div className="container-modalPay">
       <div className="content-modalPay">

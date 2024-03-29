@@ -1,9 +1,9 @@
-"use client"
+"use client";
+
 import { useState } from "react";
 import MyGraph from "./Graph";
 import dataSet from "./data";
-import DropdownSelector from "./menugraph";
-// import "antd/dist/antd.css";
+import DropdownSelector, { Category } from "./menugraph";
 import { createUseStyles } from "react-jss";
 
 const useStyles = createUseStyles(() => ({
@@ -23,8 +23,9 @@ function Analytics() {
   const classes = useStyles();
   const [data, setData] = useState(dataSet.Today);
 
-  const fetchCustomData = (key: string | number) => {
-    setData(dataSet[key]);
+  const fetchCustomData = (category: Category) => {
+    // @ts-ignore
+    setData(dataSet[category.value]);
   };
 
   return (

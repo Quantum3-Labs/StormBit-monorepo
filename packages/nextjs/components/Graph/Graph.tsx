@@ -30,6 +30,7 @@ const GradientColors = () => {
 };
 
 const MyGraph: React.FC<Props> = ({ data }) => {
+  console.log({ data });
   const classes = useStyles();
   return (
     <div className={classes.container}>

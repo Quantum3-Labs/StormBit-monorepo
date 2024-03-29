@@ -46,12 +46,12 @@ const CreationModal: React.FC<ModalProps> = ({ setIsModalOpen }) => {
     contractName: "tDAI",
   });
 
-  const { data: tokenContractETH } = useScaffoldContract({
-    contractName: "tETH",
-  });
-  const { data: tokenContractBTC } = useScaffoldContract({
-    contractName: "tBTC",
-  });
+  // const { data: tokenContractETH } = useScaffoldContract({
+  //   contractName: "tETH",
+  // });
+  // const { data: tokenContractBTC } = useScaffoldContract({
+  //   contractName: "tBTC",
+  // });
 
   const { data: simpleAgreementContract } = useScaffoldContract({
     contractName: "SimpleAgreement",
@@ -221,7 +221,7 @@ const CreationModal: React.FC<ModalProps> = ({ setIsModalOpen }) => {
             <div className="flex flex-col flex-1 gap-4">
               <label htmlFor="campo1">Token vault</label>
               <div className="flex items-center">
-                <SelectToken></SelectToken>
+                <SelectToken />
               </div>
             </div>
             <div className="flex flex-col flex-1 gap-4">
