@@ -44,3 +44,16 @@ jobs:
       - name: Build Next.js project
         run: yarn build
         working-directory: ./packages/nextjs
+
+  deploy-to-vercel:
+    needs: ci
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Vercel Action
+        uses: amondnet/vercel-action@v20
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }} # Set in your repo settings
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }} # Set in your repo settings
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }} # Set in your repo settings
+          working-directory: packages/nextjs
