@@ -130,6 +130,14 @@ const config: HardhatUserConfig = {
       url: "https://node.ghostnet.etherlink.com",
       accounts: [deployerPrivateKey, lenderPrivateKey, borrowerPrivateKey],
     },
+    zksync: {
+      url: "https://mainnet.era.zksync.io	",
+      accounts: [deployerPrivateKey, lenderPrivateKey, borrowerPrivateKey],
+    },
+    zksyncTestnet: {
+      url: "https://sepolia.era.zksync.dev",
+      accounts: [deployerPrivateKey, lenderPrivateKey, borrowerPrivateKey],
+    },
   },
   // configuration for harhdat-verify plugin
   etherscan: {
